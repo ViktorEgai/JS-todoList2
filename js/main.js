@@ -40,7 +40,11 @@ class ToDo {
 
 	addTodo(event) {
 		event.preventDefault();
-		if (this.input.value.trim()) {
+		
+		if (this.input.value === '') {
+			alert('Пустую строку добавить нельзя');
+		} else {
+			if (this.input.value.trim()) {
 			const newTodo = {
 				value: this.input.value,
 				completed: false,
@@ -50,14 +54,12 @@ class ToDo {
 			this.todoData.set(newTodo.key, newTodo);
 			this.render();
 		} 
-		if (this.input.value === '') {
-			alert('Пустую строку добавить нельзя');
 		}
 	}
 
 	deleteItem(elem) {
 		const li = elem.parentNode.parentNode;
-		this.todoData.forEach(item => {
+		this.todoData.forEach((item) => {		
 			if (item.key === li.key) {
 				li.remove();
 				this.todoData.delete(item.key);
