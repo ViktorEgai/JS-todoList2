@@ -5,7 +5,7 @@ class ToDo {
 		this.input = document.querySelector(input);
 		this.todoList = document.querySelector(todoList);
 		this.todoCompleted = document.querySelector(todoCompleted);
-		this.todoData = new Map(JSON.parse(localStorage.getItem('todoList')));
+		this.todoData = new Map(JSON.parse(localStorage.getItem('todoList')));		
 	}
 
 	addToStorage() {
@@ -23,10 +23,11 @@ class ToDo {
 	createItem(todo) {
 		const li = document.createElement('li');
 		li.classList.add('todo-item');
-		li.key = todo.key;		
+		li.key = todo.key;
 		li.insertAdjacentHTML('beforeend', `
 		<span class="text-todo">${todo.value}</span>
        <div class="todo-buttons">
+			 <button class="todo-edit"></button>
 			 <button class="todo-remove"></button>
 			 <button class="todo-complete"></button>
 			 </div>
@@ -58,33 +59,64 @@ class ToDo {
 	}
 
 	deleteItem(elem) {
-		const li = elem.parentNode.parentNode;
 		this.todoData.forEach((item) => {		
-			if (item.key === li.key) {
-				li.remove();
+			if (item.key === elem.key) {
+				this.deleteAnim(elem);
 				this.todoData.delete(item.key);
 				this.addToStorage();
 			}
 		});
 	}
-	deleteAnimation() {
-		
+	// анимация удаления
+	deleteAnim(elem) {
+		let count = 0;
+		function fly() {
+			requestAnimationFrame(fly);
+			count +=4;
+			if(count <= 120) elem.style.transform = 'translateX(' + count + '%)';
+			if (count === 120) elem.remove();
+			}
+		fly();
 	}
-	completedItem(elem) {
-		const li = elem.parentNode.parentNode;
+	// заверешенные дела
+	completedItem(elem) {		
+		// анимация 
+		let counter = 0;
+		elem.style.opacity = 0;
+		function animate() {			
+			requestAnimationFrame(animate);
+			counter += 0.05;
+			if (counter <= 1) {
+				elem.style.opacity = counter;
+			}
+		}
+		
 		this.todoData.forEach(item => {
-			if (item.key === li.key) {
+			if (item.key === elem.key) {
 				item.completed = !item.completed;
 				this.addToStorage();
 				if (item.completed === true) {
-					li.remove();
-					this.todoCompleted.append(li)
+					elem.remove();
+					this.todoCompleted.append(elem);
+					animate();
 				} else {
-					li.remove();
-					this.todoList.append(li)
+					elem.remove();
+					this.todoList.append(elem);
+					animate();
 				}
 			}
 		});
+		
+	}
+	editTodo(elem) {	
+		elem.setAttribute('contenteditable', 'true');
+		elem.focus();
+		elem.addEventListener('keypress', event => {
+			if (event.key === 'Enter') {
+				elem.setAttribute('contenteditable', 'false');
+				elem.blur();
+			}
+		})
 	}
 
 	handler() {
@@ -93,8 +125,9 @@ class ToDo {
 			item.addEventListener('click', event => {
 				const btn = event.target.closest('button');
 				const btnClass = btn.className;
-				if ( btnClass === 'todo-remove') this.deleteItem(btn);
-				if ( btnClass === 'todo-complete') this.completedItem(btn);
+				if ( btnClass === 'todo-remove') this.deleteItem(item);
+				if ( btnClass === 'todo-complete') this.completedItem(item);
+				if ( btnClass === 'todo-edit') this.editTodo(item);
 			});
 		});
 		}

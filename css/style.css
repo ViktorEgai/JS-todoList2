@@ -129,7 +129,6 @@ body {
     font-weight: 500;
     color: #444;
     line-height: 22px;
-
     background: #fff;
     border-radius: 5px;
     position: relative;
@@ -137,6 +136,7 @@ body {
     margin: 0 0 10px 0;
     padding: 14px 100px 14px 14px;
     word-break: break-word;
+    
 }
 
 .todo-item:last-of-type {
@@ -144,9 +144,8 @@ body {
 }
 
 .todo-buttons {
-    width: 100px;
-    height: 50px;
-
+    display: flex;
+    justify-content: flex-end;
     position: absolute;
     top: 0;
     right: 0;
@@ -155,7 +154,6 @@ body {
 .todo-buttons button {
     width: 50px;
     height: 50px;
-    float: left;
     background-color: transparent;
     background-position: center;
     background-repeat: no-repeat;
@@ -188,6 +186,13 @@ body {
     background-image: url("../img/uncheck.png");
 }
 
+.todo-edit {
+    background-image: url("../img/pencil.png");
+    opacity: 0;
+}
+.todo-item:hover .todo-edit {
+    opacity: 1;
+}
 .todo-completed .todo-complete {
     background-image: url("../img/check.png");
 }
